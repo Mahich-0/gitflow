@@ -50,7 +50,7 @@ class Character(Sprite):
     def update(self):
         for vil in villains:
             if pygame.sprite.collide_mask(self, vil):
-                self.hp -= 5
+                self.hp -= 1
 
         if self.hp <= 0:
             global game_running
@@ -59,6 +59,9 @@ class Character(Sprite):
             villains.clear()
             for sprt in villain_group:
                 sprt.kill()
+
+    def get_hp(self):
+        return self.hp
 
 
 class BazeAttack(Sprite):
@@ -202,6 +205,10 @@ def draw_game(world_offset_x, world_offset_y, image):
             world_x = x + world_offset_x % grid_size
             world_y = y + world_offset_y % grid_size
             screen.blit(image, (world_x, world_y))
+
+    font = pygame.font.Font(None, 36)
+    title_text = font.render(str(character.get_hp()), True, (255, 255, 255))
+    screen.blit(title_text, (10, 10))
 
 
 def draw_menu():

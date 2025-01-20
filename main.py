@@ -209,6 +209,10 @@ def draw_game(world_offset_x, world_offset_y, image):
     font = pygame.font.Font(None, 36)
     title_text = font.render(str(character.get_hp()), True, (255, 255, 255))
     screen.blit(title_text, (10, 10))
+    global tm
+    tm += 1 / FPS
+    text = font.render(str(tm), True, (255, 255, 255))
+    screen.blit(text, (10, 50))
 
 
 def draw_menu():
@@ -243,6 +247,7 @@ if __name__ == '__main__':
     villains = []
     world_offset_x = 0
     world_offset_y = 0
+    tm = 0
     running = True
     game_running = False
     vil_count = 0
@@ -261,6 +266,7 @@ if __name__ == '__main__':
             if start_button.collidepoint(mouse_pos) and mouse_pressed[0]:
                 game_running = True
                 villains = [Villain() for i in range(6)]
+                tm = 0
         else:
             keys = pygame.key.get_pressed()
             if keys[pygame.K_LEFT] or keys[pygame.K_a]:

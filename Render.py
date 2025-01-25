@@ -2,7 +2,7 @@ from Globals import *
 from Char import character
 
 
-def draw_game(world_offset_x, world_offset_y, image, tm):
+def draw_game(world_offset_x, world_offset_y, image, tm, cast):
     screen.fill((0, 0, 0))
 
     # Draw a grid to simulate the infinite world
@@ -17,8 +17,11 @@ def draw_game(world_offset_x, world_offset_y, image, tm):
     title_text = font.render(str(character.hp), True, (255, 255, 255))
     screen.blit(title_text, (10, 10))
 
-    text = font.render(str(tm), True, (255, 255, 255))
+    text = font.render(str(int(tm)) + " сек.", True, (255, 255, 255))
     screen.blit(text, (10, 50))
+
+    text = font.render(''.join(cast), True, (255, 255, 255))
+    screen.blit(text, (10, 100))
 
 
 def draw_menu():

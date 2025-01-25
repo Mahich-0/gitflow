@@ -12,9 +12,15 @@ if __name__ == '__main__':
     villains = []
     vil_count = 0
     tm = 0
-    attack = BazeAttack()
+    spell1_update = -3
+    spell2_update = -15
+    cast_update = -0.2
+    base = BazeAttack()
+    spell1 = False
+    spell2 = False
     running = True
     game_running = False
+    cast = []
     while running:
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
@@ -33,51 +39,101 @@ if __name__ == '__main__':
                 game_running = True
                 character.game_running = game_running
                 villains = [Villain() for i in range(6)]
+                for spell in base_group:
+                    spell.kill()
+                for spell in spell1_group:
+                    spell.kill()
+                for spell in spell2_group:
+                    spell.kill()
+                base = BazeAttack()
+                spell1 = False
+                spell2 = False
+                spell1_update = -3
+                spell2_update = -15
                 tm = 0
         else:
             keys = pygame.key.get_pressed()
             if keys[pygame.K_LEFT] or keys[pygame.K_a]:
                 for vil in villains:
                     vil.go_left()
+                for spell in spell1_group:
+                    spell.go_left()
                 world_offset_x += player_speed
             if keys[pygame.K_RIGHT] or keys[pygame.K_d]:
                 for vil in villains:
                     vil.go_right()
+                for spell in spell1_group:
+                    spell.go_right()
                 world_offset_x -= player_speed
             if keys[pygame.K_UP] or keys[pygame.K_w]:
                 for vil in villains:
                     vil.go_up()
+                for spell in spell1_group:
+                    spell.go_up()
                 world_offset_y += player_speed
             if keys[pygame.K_DOWN] or keys[pygame.K_s]:
                 for vil in villains:
                     vil.go_down()
+                for spell in spell1_group:
+                    spell.go_down()
                 world_offset_y -= player_speed
+
             if keys[pygame.K_z]:
-                for spell in spell_group:
-                    spell.kill()
-                attack = BazeAttack()
+                if tm - cast_update > 0.2:
+                    cast.append('z')
+                    cast_update = tm
             if keys[pygame.K_x]:
-                for spell in spell_group:
-                    spell.kill()
-                attack = Spell1()
+                if tm - cast_update > 0.2:
+                    cast.append('x')
+                    cast_update = tm
             if keys[pygame.K_c]:
-                for spell in spell_group:
-                    spell.kill()
-                attack = Spell2()
+                if tm - cast_update > 0.2:
+                    cast.append('c')
+                    cast_update = tm
+
+            if len(cast) == 3:
+                if cast == ['x', 'x', 'z']:
+                    if tm - spell1_update > 3:
+                        spell1 = Spell1()
+                        spell1_update = tm
+                        cast = []
+
+                elif cast == ['z', 'c', 'x']:
+                    if tm - spell2_update > 15:
+                        spell2 = Spell2()
+                        spell2_update = tm
+                        cast = []
+
+                else:
+                    cast = []
+
+            if spell2:
+                if tm - spell2_update >= spell2.duration:
+                    spell2 = False
 
             vil_count += 1 / FPS
             if vil_count // 1 != 0:
                 vil = Villain()
                 villains.append(vil)
                 vil_count = 0
+
             tm += 1 / FPS
-            draw_game(world_offset_x, world_offset_y, bg_image, tm)
+
+            draw_game(world_offset_x, world_offset_y, bg_image, tm, cast)
+
             player_group.draw(screen)
             player_group.update(villains)
+
             villain_group.draw(screen)
-            villain_group.update(attack)
-            spell_group.draw(screen)
-            spell_group.update()
+            villain_group.update(base, spell1, spell2)
+
+            base_group.draw(screen)
+            base_group.update()
+            spell1_group.draw(screen)
+            spell1_group.update(villains)
+            spell2_group.draw(screen)
+            spell2_group.update(tm - spell2_update)
+
         pygame.display.flip()
         clock.tick(FPS)
     pygame.quit()

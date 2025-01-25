@@ -23,7 +23,7 @@ class Villain(Sprite):
         self.mask = pygame.mask.from_surface(self.image)
         self.speed = 3
 
-    def update(self, attack):
+    def update(self, base, spell1, spell2):
         if self.hp == 0:
             self.kill()
         else:
@@ -38,8 +38,14 @@ class Villain(Sprite):
             # Move the enemy
             self.rect.x += dx * self.speed
             self.rect.y += dy * self.speed
-            if pygame.sprite.collide_mask(self, attack):
-                self.hp -= attack.damage()
+            if pygame.sprite.collide_mask(self, base):
+                self.hp -= base.damage
+            if spell1:
+                if pygame.sprite.collide_mask(self, spell1):
+                    self.hp -= spell1.damage
+            if spell2:
+                if pygame.sprite.collide_mask(self, spell2):
+                    self.hp -= spell2.damage
 
     def go_left(self):
         # Сами функции будут вызваны позже из основного цикла

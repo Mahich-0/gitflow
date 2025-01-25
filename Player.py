@@ -16,12 +16,23 @@ class Character(Sprite):
         self.change_x = 0
         self.change_y = 0
         self.game_running = False
-        self.hp = 500  # hp по умолчанию
+        self.last_update = 0
+        self.last_heal = 0
+        self.hp = 500
 
     def update(self, villains):
+        now = pygame.time.get_ticks()
         for vil in villains:
             if pygame.sprite.collide_mask(self, vil):
-                self.hp -= 1
+                if now - self.last_update > FPS * 10:
+                    self.last_update = now
+                    self.hp -= 25
+
+        if now - self.last_update > FPS * 20:
+            if self.hp < 500:
+                if now - self.last_heal > FPS * 10:
+                    self.last_heal = now
+                    self.hp += 5
 
         if self.hp <= 0:
             self.game_running = False

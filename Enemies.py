@@ -3,10 +3,9 @@ import math
 
 from pygame.sprite import Sprite
 
-from Constants import *
+from Globals import *
 from ImageLoad import load_image
 from Char import character
-from Attak import attack
 
 
 class Villain(Sprite):
@@ -24,7 +23,7 @@ class Villain(Sprite):
         self.mask = pygame.mask.from_surface(self.image)
         self.speed = 3
 
-    def update(self):
+    def update(self, attack):
         if self.hp == 0:
             self.kill()
         else:

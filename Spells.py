@@ -1,7 +1,7 @@
 from pygame.sprite import Sprite
 
 from ImageLoad import load_image
-from Constants import *
+from Globals import *
 from Char import character
 
 
@@ -79,4 +79,4 @@ class Spell2(Sprite):
             self.rect.center = old_center
 
     def damage(self):
-        return 0
+        return 5

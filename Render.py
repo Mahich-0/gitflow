@@ -1,9 +1,8 @@
-from Constants import *
+from Globals import *
 from Char import character
 
 
-def draw_game(world_offset_x, world_offset_y, image):
-    global tm
+def draw_game(world_offset_x, world_offset_y, image, tm):
     screen.fill((0, 0, 0))
 
     # Draw a grid to simulate the infinite world
@@ -15,10 +14,9 @@ def draw_game(world_offset_x, world_offset_y, image):
             screen.blit(image, (world_x, world_y))
 
     font = pygame.font.Font(None, 36)
-    title_text = font.render(str(character.get_hp()), True, (255, 255, 255))
+    title_text = font.render(str(character.hp), True, (255, 255, 255))
     screen.blit(title_text, (10, 10))
 
-    tm += 1 / FPS
     text = font.render(str(tm), True, (255, 255, 255))
     screen.blit(text, (10, 50))
 

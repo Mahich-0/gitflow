@@ -1,6 +1,6 @@
 from pygame.sprite import Sprite
 
-from Constants import *
+from Globals import *
 from ImageLoad import load_image
 
 
@@ -15,21 +15,17 @@ class Character(Sprite):
 
         self.change_x = 0
         self.change_y = 0
-        self.hp = 1  # hp по умолчанию
+        self.game_running = False
+        self.hp = 500  # hp по умолчанию
 
-    def update(self):
-        global villains, game_running
-
+    def update(self, villains):
         for vil in villains:
             if pygame.sprite.collide_mask(self, vil):
                 self.hp -= 1
 
         if self.hp <= 0:
-            game_running = False
-            self.hp = 1
+            self.game_running = False
+            self.hp = 500
             villains.clear()
             for sprt in villain_group:
                 sprt.kill()
-
-    def get_hp(self):
-        return self.hp

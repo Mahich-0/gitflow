@@ -1,7 +1,6 @@
-from Constants import *
 from Render import draw_game, draw_menu
 from Enemies import Villain
-from ImageLoad import load_image
+from Spells import *
 
 if __name__ == '__main__':
     pygame.init()
@@ -10,12 +9,19 @@ if __name__ == '__main__':
     grass = pygame.sprite.Group()
     world_offset_x = 0
     world_offset_y = 0
+    villains = []
     vil_count = 0
-    vil_spawn_speed = 5000
+    tm = 0
+    attack = BazeAttack()
+    running = True
+    game_running = False
     while running:
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 running = False
+
+        game_running = character.game_running
+
         if not game_running:
             # Draw the menu
             start_button = draw_menu()
@@ -25,6 +31,7 @@ if __name__ == '__main__':
             mouse_pressed = pygame.mouse.get_pressed()
             if start_button.collidepoint(mouse_pos) and mouse_pressed[0]:
                 game_running = True
+                character.game_running = game_running
                 villains = [Villain() for i in range(6)]
                 tm = 0
         else:
@@ -45,18 +52,30 @@ if __name__ == '__main__':
                 for vil in villains:
                     vil.go_down()
                 world_offset_y -= player_speed
+            if keys[pygame.K_z]:
+                for spell in spell_group:
+                    spell.kill()
+                attack = BazeAttack()
+            if keys[pygame.K_x]:
+                for spell in spell_group:
+                    spell.kill()
+                attack = Spell1()
+            if keys[pygame.K_c]:
+                for spell in spell_group:
+                    spell.kill()
+                attack = Spell2()
 
-            vil_count += FPS / vil_spawn_speed
+            vil_count += 1 / FPS
             if vil_count // 1 != 0:
                 vil = Villain()
                 villains.append(vil)
                 vil_count = 0
-
-            draw_game(world_offset_x, world_offset_y, bg_image)
+            tm += 1 / FPS
+            draw_game(world_offset_x, world_offset_y, bg_image, tm)
             player_group.draw(screen)
-            player_group.update()
+            player_group.update(villains)
             villain_group.draw(screen)
-            villain_group.update()
+            villain_group.update(attack)
             spell_group.draw(screen)
             spell_group.update()
         pygame.display.flip()

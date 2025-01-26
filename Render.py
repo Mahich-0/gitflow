@@ -2,7 +2,7 @@ from Globals import *
 from Char import character
 
 
-def draw_game(world_offset_x, world_offset_y, image, tm, cast):
+def draw_game(world_offset_x, world_offset_y, image, tm, cast, spell1_cast, spell2_cast, spell3_cast):
     screen.fill((0, 0, 0))
 
     # Draw a grid to simulate the infinite world
@@ -14,14 +14,26 @@ def draw_game(world_offset_x, world_offset_y, image, tm, cast):
             screen.blit(image, (world_x, world_y))
 
     font = pygame.font.Font(None, 36)
-    title_text = font.render(str(character.hp), True, (255, 255, 255))
-    screen.blit(title_text, (10, 10))
+    text = font.render(str(character.hp), True, (255, 255, 255))
+    screen.blit(text, (10, 10))
 
     text = font.render(str(int(tm)) + " сек.", True, (255, 255, 255))
     screen.blit(text, (10, 50))
 
-    text = font.render(''.join(cast), True, (255, 255, 255))
+    text = font.render('First cast: ' + ''.join(spell1_cast), True, (255, 255, 255))
+    screen.blit(text, (10, 75))
+
+    text = font.render('Second cast: ' + ''.join(spell2_cast), True, (255, 255, 255))
     screen.blit(text, (10, 100))
+
+    text = font.render('Third cast: ' + ''.join(spell3_cast), True, (255, 255, 255))
+    screen.blit(text, (10, 125))
+
+    text = font.render(''.join(cast), True, (255, 255, 255))
+    screen.blit(text, (10, 150))
+
+    text = font.render(str(character.kills_count), True, (255, 255, 255))
+    screen.blit(text, (10, 175))
 
 
 def draw_menu():

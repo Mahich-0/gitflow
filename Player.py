@@ -19,6 +19,7 @@ class Character(Sprite):
         self.last_update = 0
         self.last_heal = 0
         self.hp = 500
+        self.kills_count = 0
 
     def update(self, villains):
         now = pygame.time.get_ticks()

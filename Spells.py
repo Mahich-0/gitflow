@@ -15,14 +15,12 @@ class BazeAttack(Sprite):
         self.image = self.image_orig.copy()
 
         self.rect = self.image.get_rect()
-        # self.rect.x = character.rect.centerx - 120
-        # self.rect.y = character.rect.centery
         self.rect.center = character.rect.center
         self.rot = 0
         self.rot_speed = 7
         self.last_update = pygame.time.get_ticks()
         self.mask = pygame.mask.from_surface(self.image)
-        self.damage = 0
+        self.damage = 10
 
     def update(self):
         now = pygame.time.get_ticks()
@@ -34,7 +32,6 @@ class BazeAttack(Sprite):
             self.image = new_image
             self.rect = self.image.get_rect()
             self.rect.center = old_center
-        # pass
 
 
 class Spell1(Sprite):
@@ -45,6 +42,7 @@ class Spell1(Sprite):
 
         self.rect = self.image.get_rect()
         self.rect.center = character.rect.center
+        self.mask = pygame.mask.from_surface(self.image)
         self.damage = 100
         self.dx = False
         self.dy = False
@@ -83,22 +81,15 @@ class Spell1(Sprite):
             self.kill()
 
     def go_left(self):
-        # Сами функции будут вызваны позже из основного цикла
-        # self.change_x = player_speed
-        self.rect.centerx += player_speed  # Двигаем игрока по Х
+        self.rect.centerx += player_speed
 
     def go_right(self):
-        # то же самое, но вправо
-        # self.change_x = -player_speed
         self.rect.centerx -= player_speed
 
     def go_up(self):
-        # Сами функции будут вызваны позже из основного цикла
-        # self.change_y = player_speed
-        self.rect.centery += player_speed  # Двигаем игрока по y
+        self.rect.centery += player_speed
 
     def go_down(self):
-        # self.change_y = -player_speed
         self.rect.centery -= player_speed
 
 
@@ -116,10 +107,9 @@ class Spell2(Sprite):
         self.last_update = pygame.time.get_ticks()
         self.mask = pygame.mask.from_surface(self.image)
         self.damage = 25
-        self.duration = 10
 
     def update(self, update):
-        if update < self.duration:
+        if update < 10:
             now = pygame.time.get_ticks()
             if now - self.last_update > 50:
                 self.last_update = now
@@ -131,3 +121,60 @@ class Spell2(Sprite):
                 self.rect.center = old_center
         else:
             self.kill()
+
+
+class Spell3(Sprite):
+    def __init__(self):
+        super().__init__(spell3_group)
+
+        self.image_orig = load_image('spell2.png')
+        self.image = self.image_orig.copy()
+
+        self.rect = self.image.get_rect()
+        self.rect.center = character.rect.center
+        self.rot = 0
+        self.rot_speed = 7
+        self.last_update = pygame.time.get_ticks()
+        self.mask = pygame.mask.from_surface(self.image)
+        self.damage = 25
+
+    def update(self, villains, update):
+        if update < 10:
+            distances = dict()
+            for vil in villains:
+                dx, dy = character.rect.x - vil.rect.centerx, character.rect.centery - vil.rect.y
+                distance = math.sqrt(dx ** 2 + dy ** 2)
+                distances[distance] = (vil.rect.centerx, vil.rect.centery)
+
+            coords = distances[min(distances.keys())]
+
+            dx = self.rect.centerx - coords[0]
+            dy = self.rect.centery - coords[1]
+
+            self.rect.centerx -= dx
+            self.rect.centery -= dy
+
+            now = pygame.time.get_ticks()
+            if now - self.last_update > 50:
+                self.last_update = now
+                self.rot = (self.rot + self.rot_speed) % 360
+                new_image = pygame.transform.rotate(self.image_orig, self.rot)
+                old_center = self.rect.center
+                self.image = new_image
+                self.rect = self.image.get_rect()
+                self.rect.center = old_center
+
+        else:
+            self.kill()
+
+    def go_left(self):
+        self.rect.centerx += player_speed
+
+    def go_right(self):
+        self.rect.centerx -= player_speed
+
+    def go_up(self):
+        self.rect.centery += player_speed
+
+    def go_down(self):
+        self.rect.centery -= player_speed

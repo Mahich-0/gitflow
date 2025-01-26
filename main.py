@@ -1,3 +1,5 @@
+import random
+
 from Render import draw_game, draw_menu
 from Enemies import Villain
 from Spells import *
@@ -14,10 +16,15 @@ if __name__ == '__main__':
     tm = 0
     spell1_update = -3
     spell2_update = -15
+    spell3_update = -15
     cast_update = -0.2
     base = BazeAttack()
     spell1 = False
     spell2 = False
+    spell3 = False
+    spell1_cast = []
+    spell2_cast = []
+    spell3_cast = []
     running = True
     game_running = False
     cast = []
@@ -48,9 +55,17 @@ if __name__ == '__main__':
                 base = BazeAttack()
                 spell1 = False
                 spell2 = False
+                spell3 = False
                 spell1_update = -3
                 spell2_update = -15
+                spell3_update = -15
+                spell1_cast = []
+                spell2_cast = []
+                spell3_cast = []
                 tm = 0
+                cast = []
+                cast_update = -0.2
+                character.kills_count = 0
         else:
             keys = pygame.key.get_pressed()
             if keys[pygame.K_LEFT] or keys[pygame.K_a]:
@@ -58,11 +73,15 @@ if __name__ == '__main__':
                     vil.go_left()
                 for spell in spell1_group:
                     spell.go_left()
+                for spell in spell3_group:
+                    spell.go_left()
                 world_offset_x += player_speed
             if keys[pygame.K_RIGHT] or keys[pygame.K_d]:
                 for vil in villains:
                     vil.go_right()
                 for spell in spell1_group:
+                    spell.go_right()
+                for spell in spell3_group:
                     spell.go_right()
                 world_offset_x -= player_speed
             if keys[pygame.K_UP] or keys[pygame.K_w]:
@@ -70,11 +89,15 @@ if __name__ == '__main__':
                     vil.go_up()
                 for spell in spell1_group:
                     spell.go_up()
+                for spell in spell3_group:
+                    spell.go_up()
                 world_offset_y += player_speed
             if keys[pygame.K_DOWN] or keys[pygame.K_s]:
                 for vil in villains:
                     vil.go_down()
                 for spell in spell1_group:
+                    spell.go_down()
+                for spell in spell3_group:
                     spell.go_down()
                 world_offset_y -= player_speed
 
@@ -90,26 +113,60 @@ if __name__ == '__main__':
                 if tm - cast_update > 0.2:
                     cast.append('c')
                     cast_update = tm
+            if keys[pygame.K_e]:
+                cast = []
+
+            if character.kills_count == 10 and spell1_cast == []:
+                for _ in range(3):
+                    spell1_cast.append(random.choice(['z', 'x', 'c']))
+
+            if character.kills_count == 20 and spell2_cast == []:
+                for _ in range(3):
+                    spell2_cast.append(random.choice(['z', 'x', 'c']))
+                while spell1_cast == spell2_cast:
+                    spell2_cast = []
+                    for _ in range(3):
+                        spell2_cast.append(random.choice(['z', 'x', 'c']))
+
+            if character.kills_count == 30 and spell3_cast == []:
+                for _ in range(3):
+                    spell3_cast.append(random.choice(['z', 'x', 'c']))
+                while spell1_cast == spell3_cast or spell2_cast == spell3_cast:
+                    spell3_cast = []
+                    for _ in range(3):
+                        spell3_cast.append(random.choice(['z', 'x', 'c']))
 
             if len(cast) == 3:
-                if cast == ['x', 'x', 'z']:
+                if cast == spell1_cast and character.kills_count >= 10:
                     if tm - spell1_update > 3:
                         spell1 = Spell1()
                         spell1_update = tm
                         cast = []
 
-                elif cast == ['z', 'c', 'x']:
+                elif cast == spell2_cast and character.kills_count >= 20:
                     if tm - spell2_update > 15:
                         spell2 = Spell2()
                         spell2_update = tm
                         cast = []
 
+                elif cast == spell3_cast and character.kills_count >= 30:
+                    if tm - spell3_update > 15:
+                        spell3 = Spell3()
+                        spell3_update = tm
+                        cast = []
                 else:
                     cast = []
 
+            if len(cast) > 3:
+                cast = []
+
             if spell2:
-                if tm - spell2_update >= spell2.duration:
+                if tm - spell2_update >= 10:
                     spell2 = False
+
+            if spell3:
+                if tm - spell3_update >= 10:
+                    spell3 = False
 
             vil_count += 1 / FPS
             if vil_count // 1 != 0:
@@ -119,13 +176,13 @@ if __name__ == '__main__':
 
             tm += 1 / FPS
 
-            draw_game(world_offset_x, world_offset_y, bg_image, tm, cast)
+            draw_game(world_offset_x, world_offset_y, bg_image, tm, cast, spell1_cast, spell2_cast, spell3_cast)
 
             player_group.draw(screen)
             player_group.update(villains)
 
             villain_group.draw(screen)
-            villain_group.update(base, spell1, spell2)
+            villain_group.update(base, spell1, spell2, spell3)
 
             base_group.draw(screen)
             base_group.update()
@@ -133,6 +190,8 @@ if __name__ == '__main__':
             spell1_group.update(villains)
             spell2_group.draw(screen)
             spell2_group.update(tm - spell2_update)
+            spell3_group.draw(screen)
+            spell3_group.update(villains, tm - spell3_update)
 
         pygame.display.flip()
         clock.tick(FPS)

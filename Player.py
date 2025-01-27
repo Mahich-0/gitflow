@@ -21,7 +21,7 @@ class Character(Sprite):
         self.hp = 500
         self.kills_count = 0
 
-    def update(self, villains):
+    def update(self, villains, villain_group):
         now = pygame.time.get_ticks()
         for vil in villains:
             if pygame.sprite.collide_mask(self, vil):

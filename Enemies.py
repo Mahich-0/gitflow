@@ -9,7 +9,7 @@ from Char import character
 
 
 class Villain(Sprite):
-    def __init__(self):
+    def __init__(self, villain_group):
         super().__init__(villain_group)
         self.image = load_image('Enemy.png')
 

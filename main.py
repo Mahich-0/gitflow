@@ -9,6 +9,11 @@ if __name__ == '__main__':
     bg_image = load_image('grass.png')
     clock = pygame.time.Clock()
     grass = pygame.sprite.Group()
+    base_group = pygame.sprite.Group()
+    spell1_group = pygame.sprite.Group()
+    spell2_group = pygame.sprite.Group()
+    spell3_group = pygame.sprite.Group()
+    villain_group = pygame.sprite.Group()
     world_offset_x = 0
     world_offset_y = 0
     villains = []
@@ -18,7 +23,7 @@ if __name__ == '__main__':
     spell2_update = -15
     spell3_update = -15
     cast_update = -0.2
-    base = BazeAttack()
+    base = BazeAttack(base_group)
     spell1 = False
     spell2 = False
     spell3 = False
@@ -45,14 +50,14 @@ if __name__ == '__main__':
             if start_button.collidepoint(mouse_pos) and mouse_pressed[0]:
                 game_running = True
                 character.game_running = game_running
-                villains = [Villain() for i in range(6)]
+                villains = [Villain(villain_group) for i in range(6)]
                 for spell in base_group:
                     spell.kill()
                 for spell in spell1_group:
                     spell.kill()
                 for spell in spell2_group:
                     spell.kill()
-                base = BazeAttack()
+                base = BazeAttack(base_group)
                 spell1 = False
                 spell2 = False
                 spell3 = False
@@ -139,19 +144,19 @@ if __name__ == '__main__':
             if len(cast) == 3:
                 if cast == spell1_cast and character.kills_count >= 10:
                     if tm - spell1_update > 3:
-                        spell1 = Spell1()
+                        spell1 = Spell1(spell1_group)
                         spell1_update = tm
                         cast = []
 
                 elif cast == spell2_cast and character.kills_count >= 20:
                     if tm - spell2_update > 15:
-                        spell2 = Spell2()
+                        spell2 = Spell2(spell2_group)
                         spell2_update = tm
                         cast = []
 
                 elif cast == spell3_cast and character.kills_count >= 30:
                     if tm - spell3_update > 15:
-                        spell3 = Spell3()
+                        spell3 = Spell3(spell3_group)
                         spell3_update = tm
                         cast = []
                 else:
@@ -170,7 +175,7 @@ if __name__ == '__main__':
 
             vil_count += 1 / FPS
             if vil_count // 1 != 0:
-                vil = Villain()
+                vil = Villain(villain_group)
                 villains.append(vil)
                 vil_count = 0
 
@@ -179,7 +184,7 @@ if __name__ == '__main__':
             draw_game(world_offset_x, world_offset_y, bg_image, tm, cast, spell1_cast, spell2_cast, spell3_cast)
 
             player_group.draw(screen)
-            player_group.update(villains)
+            player_group.update(villains, villain_group)
 
             villain_group.draw(screen)
             villain_group.update(base, spell1, spell2, spell3)

@@ -121,11 +121,11 @@ if __name__ == '__main__':
             if keys[pygame.K_e]:
                 cast = []
 
-            if character.kills_count == 10 and spell1_cast == []:
+            if character.kills_count >= 10 and spell1_cast == []:
                 for _ in range(3):
                     spell1_cast.append(random.choice(['z', 'x', 'c']))
 
-            if character.kills_count == 20 and spell2_cast == []:
+            if character.kills_count >= 20 and spell2_cast == []:
                 for _ in range(3):
                     spell2_cast.append(random.choice(['z', 'x', 'c']))
                 while spell1_cast == spell2_cast:
@@ -133,7 +133,7 @@ if __name__ == '__main__':
                     for _ in range(3):
                         spell2_cast.append(random.choice(['z', 'x', 'c']))
 
-            if character.kills_count == 30 and spell3_cast == []:
+            if character.kills_count >= 30 and spell3_cast == []:
                 for _ in range(3):
                     spell3_cast.append(random.choice(['z', 'x', 'c']))
                 while spell1_cast == spell3_cast or spell2_cast == spell3_cast:

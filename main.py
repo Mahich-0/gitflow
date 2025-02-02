@@ -7,6 +7,8 @@ from Spells import *
 if __name__ == '__main__':
     pygame.init()
     bg_image = load_image(f'map{random.randrange(1, 6)}.jpg')
+    pygame.display.set_caption('Judgement Cut End')
+    pygame.display.set_icon(load_image("icon.ico"))
     clock = pygame.time.Clock()
     grass = pygame.sprite.Group()
     base_group = pygame.sprite.Group()

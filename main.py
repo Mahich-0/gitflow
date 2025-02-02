@@ -77,6 +77,7 @@ if __name__ == '__main__':
                 cast = []
                 cast_update = -0.2
                 character.kills_count = 0
+                bg_image = load_image(f'map{random.randrange(1, 6)}.jpg')
         else:
             # character.hp = 500
             keys = pygame.key.get_pressed()

@@ -1,5 +1,6 @@
 from Globals import *
 from Char import character
+from Database import return_data, return_record
 
 
 def draw_game(world_offset_x, world_offset_y, image, tm, cast, spell1_cast, spell2_cast, spell3_cast):
@@ -21,7 +22,7 @@ def draw_game(world_offset_x, world_offset_y, image, tm, cast, spell1_cast, spel
 
     font = pygame.font.Font(None, 36)
 
-    text = font.render(str(min) + ':' + str(tm), True, (255, 255, 255))
+    text = font.render(str(min).rjust(2, '0') + ':' + str(tm).rjust(2, '0'), True, (255, 255, 255))
     screen.blit(text, (470, 35))
 
     text = font.render('hp: ' + str(character.hp), True, (255, 255, 255))
@@ -74,10 +75,30 @@ def restart_menu():
     screen.fill((0, 0, 0))
     font = pygame.font.Font(None, 36)
     title_text = font.render("Game over!", True, (255, 255, 255))
-    start_button = pygame.Rect(WIDTH // 2 - 100, HEIGHT // 2 - 50, 200, 50)
+    start_button = pygame.Rect(WIDTH // 2 - 100, HEIGHT // 2 - 50 + 200, 200, 50)
 
     # Draw Title
     screen.blit(title_text, (WIDTH // 2 - title_text.get_width() // 2, HEIGHT // 2 - 150))
+
+    now_res = return_data()
+    min_res = 0
+    sec_res = int(now_res[0])
+    while sec_res >= 60:
+        min_res += 1
+        sec_res %= 60
+    res_text = font.render(f"last result: {str(min_res).rjust(2, '0')}:{sec_res}, {now_res[-1]} kills", True,
+                           (255, 255, 255))
+    screen.blit(res_text, (WIDTH // 2 - title_text.get_width() // 2 - 70, HEIGHT // 2 - 10))
+
+    record = return_record()
+    min_rec = 0
+    sec_rec = int(record[0])
+    while sec_rec >= 60:
+        min_rec += 1
+        sec_rec %= 60
+    res_text = font.render(f"record: {str(min_rec).rjust(2, '0')}:{str(sec_rec).rjust(2, '0')}, {record[-1]} kills",
+                           True, (255, 255, 255))
+    screen.blit(res_text, (WIDTH // 2 - title_text.get_width() // 2 - 50, HEIGHT // 2 + 20))
 
     # Draw Start Button
     pygame.draw.rect(screen, (0, 255, 0), start_button)

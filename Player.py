@@ -1,7 +1,9 @@
+import pygame.time
 from pygame.sprite import Sprite
 
 from Globals import *
 from ImageLoad import load_image
+from Database import saving_data
 
 
 class Character(Sprite):
@@ -39,6 +41,7 @@ class Character(Sprite):
         if self.hp <= 0:
             self.end = True
             self.game_running = False
+            saving_data(pygame.time.get_ticks(), self.kills_count)
             self.hp = 500
             villains.clear()
             for sprt in villain_group:

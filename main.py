@@ -44,6 +44,7 @@ if __name__ == '__main__':
             start_button = draw_menu()
         else:
             start_button = restart_menu()
+            # saving_data(tm, character.kills_count)
 
         if not game_running:
 
